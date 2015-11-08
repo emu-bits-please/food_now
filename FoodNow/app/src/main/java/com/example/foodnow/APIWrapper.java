@@ -81,7 +81,7 @@ public class APIWrapper {
 
                     int randInt = (int)(mList.getMerchants().size() * Math.random());
 
-                    String id = mList.getMerchants().get(randInt).getId();
+                    String id = mList.getMerchants().get(1).getId();
                     Log.d("TEST", "TEST" + id);
 
                     // Query Selected Merchant for Menu

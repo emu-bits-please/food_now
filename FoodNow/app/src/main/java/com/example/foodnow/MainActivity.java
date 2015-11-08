@@ -3,75 +3,69 @@ package com.example.foodnow;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.foodnow.controller.FoodItemFactory;
-import com.example.foodnow.model.Item;
-import com.example.foodnow.model.OptionGroup;
-
 public class MainActivity extends AppCompatActivity {
+    APIWrapper BOOM = new APIWrapper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final Context context = this;
         super.onCreate(savedInstanceState);
 
-        //TODO: Shit's borked. Sorry guys.
-//        Item pizza = new Item();
-//        pizza.setEverything("1", "Pizza");
-//
-//        OptionGroup toppings = new OptionGroup();
-//        toppings.setEverything("2", "Toppings", 0, 0);
-//
-//        pizza.addChild(toppings);
-//        Item orderedItem = FoodItemFactory.buildFoodItem(pizza);
-//        Log.d("ITEM", orderedItem.getName());
-//        Log.d("GROUP", orderedItem.getChildren().get(0).getName());
-
         setContentView(R.layout.activity_main);
+
+        final FloatingActionButton infoButton = (FloatingActionButton) findViewById(R.id.infoButton);
+        infoButton.setEnabled(false);
+        infoButton.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        APIWrapper BOOM = new APIWrapper();
-        BOOM.doAPICALL();
 
         final TextView confirmationText = (TextView) findViewById(R.id.confirmText);
         final Button newOrderButton = (Button) findViewById(R.id.newOrderButton);
         newOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                infoButton.setVisibility(View.INVISIBLE);
+                infoButton.setEnabled(false);
                 confirmationText.setVisibility(View.INVISIBLE);
                 newOrderButton.setVisibility(View.INVISIBLE);
             }
         });
 
-        Button orderButton = (Button) findViewById(R.id.orderButton);
+        final Button orderButton = (Button) findViewById(R.id.orderButton);
         orderButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+                ViewPropertyAnimator buttonSpin = orderButton.animate();
+                buttonSpin.rotationBy((float)360);
+                BOOM.doAPICALL(infoButton);
                 confirmationText.setVisibility(View.VISIBLE);
                 newOrderButton.setVisibility(View.VISIBLE);
             }
         });
 
-        FloatingActionButton infoButton = (FloatingActionButton) findViewById(R.id.infoButton);
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String orderedItemDetails = "Item: Pizza\nOptions: Pepperoni, Bacon, Sausage\nCost: $14.38";
+                String orderedItemDetails = "Item: " +
+                        BOOM.getFoodItemName() +
+                        "\nPrice: " + BOOM.getFoodPrice() +
+                        "\nMerchant: " +
+                        BOOM.getMerchantName() +
+                        "\n" + BOOM.getAddress();
                 new AlertDialog.Builder(context)
                         .setTitle("Ordered Item")
                         .setMessage(orderedItemDetails)

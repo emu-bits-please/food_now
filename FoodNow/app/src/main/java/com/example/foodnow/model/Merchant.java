@@ -5,11 +5,17 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class Merchant {
+
+    public class Summary {
+        @SerializedName("name")
+        private String name;
+    }
+
     @SerializedName("id")
     private String id;
 
-    @SerializedName("summary.name")
-    private String name;
+    @SerializedName("summary")
+    private Summary summary;
 
     @SerializedName("location")
     private Location location;
@@ -23,11 +29,14 @@ public class Merchant {
     @SerializedName("rating")
     private int rating;
 
+    @SerializedName("address")
+    private String address;
+
     private MerchantType type;
 
     public Merchant(String id, String name, Location location, String phone, ArrayList<String> cuisines, int rating, MerchantType type) {
         this.id = id;
-        this.name = name;
+        this.summary.name = name;
         this.location = location;
         this.phone = phone;
         this.cuisines = cuisines;
@@ -40,7 +49,7 @@ public class Merchant {
     }
 
     public String getName() {
-        return name;
+        return summary.name;
     }
 
     public Location getLocation() {
@@ -61,5 +70,9 @@ public class Merchant {
 
     public MerchantType getType() {
         return type;
+    }
+
+    public String getAddress() {
+        return String.format("%s\n%s, %s %s", location.getStreet(), location.getCity(), location.getState(), location.getZip());
     }
 }

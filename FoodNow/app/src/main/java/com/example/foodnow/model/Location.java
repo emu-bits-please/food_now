@@ -12,7 +12,7 @@ public class Location {
     @SerializedName("state")
     private String state;
 
-    @SerializedName("zip_code")
+    @SerializedName("zip")
     private String zip;
 
     @SerializedName("latitude")

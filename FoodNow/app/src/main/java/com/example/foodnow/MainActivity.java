@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,8 +17,12 @@ import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
     APIWrapper BOOM = new APIWrapper();
+    TextToSpeech t2s;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +38,43 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        t2s = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    System.out.println("TESTESTEST");
+                    t2s.setLanguage(Locale.UK);
+                    t2s.setSpeechRate((float) 1.2);
+                }
+            }
+        });
+
         final TextView confirmationText = (TextView) findViewById(R.id.confirmText);
+
         final Button newOrderButton = (Button) findViewById(R.id.newOrderButton);
+        final Button orderButton = (Button) findViewById(R.id.orderButton);
+        orderButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                ViewPropertyAnimator buttonSpin = orderButton.animate();
+                buttonSpin.rotationBy((float) 360);
+                BOOM.doAPICALL(infoButton);
+                confirmationText.setVisibility(View.VISIBLE);
+                newOrderButton.setVisibility(View.VISIBLE);
+                orderButton.setEnabled(false);
+                newOrderButton.setEnabled(false);
+                t2s.setSpeechRate((float) 1.5);
+                t2s.speak("Don't worry, food is on it's way.", TextToSpeech.QUEUE_FLUSH, null, null);
+            }
+        });
+
+
         newOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                orderButton.setEnabled(true);
                 infoButton.setVisibility(View.INVISIBLE);
                 infoButton.setEnabled(false);
                 confirmationText.setVisibility(View.INVISIBLE);
@@ -44,28 +82,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final Button orderButton = (Button) findViewById(R.id.orderButton);
-        orderButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                ViewPropertyAnimator buttonSpin = orderButton.animate();
-                buttonSpin.rotationBy((float)360);
-                BOOM.doAPICALL(infoButton);
-                confirmationText.setVisibility(View.VISIBLE);
-                newOrderButton.setVisibility(View.VISIBLE);
-            }
-        });
-
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                newOrderButton.setEnabled(true);
                 String orderedItemDetails = "Item: " +
                         BOOM.getFoodItemName() +
                         "\nPrice: " + BOOM.getFoodPrice() +
                         "\nMerchant: " +
                         BOOM.getMerchantName() +
                         "\n" + BOOM.getAddress();
+                t2s.setSpeechRate((float) 1.2);
+                t2s.speak("You ordered " + BOOM.getFoodItemName(), TextToSpeech.QUEUE_FLUSH, null, null);
+
                 new AlertDialog.Builder(context)
                         .setTitle("Ordered Item")
                         .setMessage(orderedItemDetails)

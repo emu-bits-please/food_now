@@ -4,7 +4,6 @@ public class Order {
     private String id;
     private Customer customer;
     private Merchant merchant;
-    private Item item;
     private float total;
     private int estimatedTime;
 
@@ -18,10 +17,6 @@ public class Order {
 
     public Merchant getMerchant() {
         return merchant;
-    }
-
-    public Item getItem() {
-        return item;
     }
 
     public float getTotal() {

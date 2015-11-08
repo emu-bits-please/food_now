@@ -3,17 +3,15 @@ package com.example.foodnow;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.foodnow.model.Item;
+import com.example.foodnow.model.MegaMenuType;
 import com.example.foodnow.model.Menu;
 import com.example.foodnow.model.MenuList;
+import com.example.foodnow.model.Merchant;
 import com.example.foodnow.model.MerchantList;
+import com.example.foodnow.model.Randomizer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -21,7 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 
 /**
@@ -81,29 +79,37 @@ public class APIWrapper {
 
                     int randInt = (int)(mList.getMerchants().size() * Math.random());
 
-                    String id = mList.getMerchants().get(1).getId();
-                    Log.d("TEST", "TEST" + id);
+                    String id;
+                    int numberOfMenus;
+                    MenuList menus;
+                    do {
+                        id = mList.getMerchants().get(Randomizer.getRandomIntegerInclusive(0, mList.getMerchants().size() - 1)).getId();
+                        List<Merchant> merchants = mList.getMerchants();
 
-                    // Query Selected Merchant for Menu
+                        Log.d("TEST", "TEST" + id);
 
-                    url = new URL(host + "merchant/" + id + "/menu" + "?client_id=" + CLIENT_ID);
-                    Log.d("test",host + "merchant/" + id + "/menu" + "?client_id=" + CLIENT_ID);
-                    urlConnection = (HttpURLConnection) url.openConnection();
+                        // Query Selected Merchant for Menu
 
-                    in = new BufferedInputStream(urlConnection.getInputStream());
-                    br = new BufferedReader(new InputStreamReader(in));
-                    JSON = br.readLine();
-                    Log.d("tEsT", JSON);
+                        url = new URL(host + "merchant/" + id + "/menu" + "?client_id=" + CLIENT_ID);
+                        Log.d("test", host + "merchant/" + id + "/menu" + "?client_id=" + CLIENT_ID);
+                        urlConnection = (HttpURLConnection) url.openConnection();
 
-                    // Parse Menu For Menu Children
-                    MenuList menus = gson.fromJson(JSON, MenuList.class);
+                        in = new BufferedInputStream(urlConnection.getInputStream());
+                        br = new BufferedReader(new InputStreamReader(in));
+                        JSON = br.readLine();
+                        Log.d("tEsT", JSON);
+
+                        // Parse Menu For Menu Children
+                        menus = gson.fromJson(JSON, MenuList.class);
+                        numberOfMenus = menus.getMenulist().size();
+                    } while (numberOfMenus <= 1);
 
                     randInt = (int) (Math.random() * menus.getMenulist().size());
                     Menu selectedMenu = menus.getMenulist().get(randInt);
 
                     Log.d("testblah", selectedMenu.getId());
 
-                    Item randomItem = selectedMenu.getRandomItem();
+                    MegaMenuType randomItem = selectedMenu.getRandomItem();
                     Log.d("item", randomItem.getName());
 
                     return "";

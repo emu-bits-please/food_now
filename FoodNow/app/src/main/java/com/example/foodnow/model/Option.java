@@ -24,7 +24,7 @@ public class Option implements MenuChild {
     private float increment;
 
     @SerializedName("children")
-    private ArrayList<MenuChild> children;
+    private ArrayList<MegaMenuType> children;
 
     @Override
     public String getId() {
@@ -42,7 +42,7 @@ public class Option implements MenuChild {
     }
 
     @Override
-    public ArrayList<MenuChild> getChildren() {
+    public ArrayList<MegaMenuType> getChildren() {
         return children;
     }
 

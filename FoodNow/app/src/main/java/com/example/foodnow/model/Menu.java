@@ -3,6 +3,7 @@ package com.example.foodnow.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Menu {
     @SerializedName("id")
@@ -12,10 +13,13 @@ public class Menu {
     private String name;
 
     @SerializedName("children")
-    private ArrayList<MenuChild> children;
+    private ArrayList<MegaMenuType> children;
 
     @SerializedName("description")
     private String description;
+
+    @SerializedName("unique_id")
+    private int uniqueId;
 
     public String getId() {
         return id;
@@ -25,7 +29,24 @@ public class Menu {
         return name;
     }
 
-    public ArrayList<MenuChild> getChildren() {
+    public Item getRandomItem() {
+        MegaMenuType subMenu = children.get((int) (Math.random() * children.size()));
+
+        List<MegaMenuType> megaMenuItems = subMenu.getChildren();
+
+        MegaMenuType megaMenuItem = megaMenuItems.get((int) (Math.random() * megaMenuItems.size()));
+
+        MenuChild menuChildItem = MenuChildFactory.getMenuChild(megaMenuItem);
+
+        if(menuChildItem instanceof Item) {
+            return (Item) menuChildItem;
+        }
+
+        return null;
+
+    }
+
+    public ArrayList<MegaMenuType> getChildren() {
         return children;
     }
 

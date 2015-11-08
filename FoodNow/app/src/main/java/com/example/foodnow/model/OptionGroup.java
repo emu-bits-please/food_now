@@ -21,10 +21,10 @@ public class OptionGroup implements MenuChild {
     private int maxSelection;
 
     @SerializedName("sel_dep")
-    private boolean selDep;
+    private int selDep;
 
     @SerializedName("children")
-    private ArrayList<MenuChild> children;
+    private ArrayList<MegaMenuType> children;
 
     @Override
     public String getId() {
@@ -42,7 +42,7 @@ public class OptionGroup implements MenuChild {
     }
 
     @Override
-    public ArrayList<MenuChild> getChildren() {
+    public ArrayList<MegaMenuType> getChildren() {
         return children;
     }
 
@@ -54,7 +54,7 @@ public class OptionGroup implements MenuChild {
         return minSelection;
     }
 
-    public boolean isSelDep() {
+    public int isSelDep() {
         return selDep;
     }
 }

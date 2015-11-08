@@ -9,5 +9,5 @@ public interface MenuChild {
 
     public String getDescription();
 
-    public ArrayList<MenuChild> getChildren();
+    public ArrayList<MegaMenuType> getChildren();
 }
